@@ -132,9 +132,17 @@ class InstallUpstreamKernel(unittest.TestCase):
                     "grub2-mkconfig  --output=/boot/grub2/grub.cfg")
                 log.debug("Rebooting after kernel install...")
                 self.console_thread.console_terminate()
+                self.prompt = self.cv_SYSTEM.util.build_prompt()
+                self.console_thread.console_terminate()
                 con.close()
-                self.cv_SYSTEM.goto_state(OpSystemState.OFF)
-                self.cv_SYSTEM.goto_state(OpSystemState.OS)
+                for i in range(5):
+                    raw_pty = self.cv_SYSTEM.console.get_console()
+                    time.sleep(10)
+                    if raw_pty.sendline("uname -r")!=0:
+                        break
+                raw_pty.sendline("reboot")
+                raw_pty.expect("login:", timeout=600)
+                raw_pty.close()
             else:
                 self.console_thread.console_terminate()
                 cmdline = con.run_command("cat /proc/cmdline")[-1]
