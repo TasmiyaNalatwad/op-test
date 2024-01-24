@@ -67,6 +67,8 @@ class InstallUpstreamKernel(unittest.TestCase):
         self.console_thread = OpSOLMonitorThread(1, "console")
 
     def runTest(self):
+        print("Tasmiya")
+        print("Tejas")
         def is_url(path):
             '''
             param path: path to download
